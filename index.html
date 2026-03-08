@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insta Ride - Secure App</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .app-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 320px; text-align: center; }
+        .logo-placeholder { background: #1a2a6c; color: white; padding: 15px; border-radius: 50%; width: 60px; height: 60px; line-height: 60px; margin: 0 auto 15px; font-weight: bold; font-size: 20px; border: 3px solid #fdbb2d; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 12px; background: #b21f1f; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        #admin-panel { display: none; }
+        .key-text { font-size: 10px; color: #aaa; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="app-card" id="login-screen">
+    <div class="logo-placeholder">IR</div>
+    <h2>Insta Ride</h2>
+    <p>सुरक्षित लॉगिन</p>
+    <input type="tel" id="mobile" placeholder="मोबाइल नंबर (10 अंक)">
+    <div id="otp-area" style="display:none">
+        <input type="text" id="otp-val" placeholder="OTP दर्ज करें (123456)">
+    </div>
+    <button class="btn" id="action-btn" onclick="nextStep()">OTP प्राप्त करें</button>
+</div>
+
+<div class="app-card" id="admin-panel">
+    <h2 style="color: #1a2a6c;">एडमिन कंट्रोल</h2>
+    <hr>
+    <p>ड्राइवर: राहुल कुमार</p>
+    <p>स्थिति: <span id="status" style="color:orange">पेंडिंग</span></p>
+    <button class="btn" style="background:green" onclick="verify('Approved')">Approve</button>
+    <button class="btn" style="background:gray; margin-top:5px" onclick="verify('Rejected')">Reject</button>
+    <div class="key-text">Key: INSTA-SECURE-9988-GTOK-2026</div>
+</div>
+
+<script>
+    function nextStep() {
+        var mobile = document.getElementById('mobile');
+        var otpArea = document.getElementById('otp-area');
+        var btn = document.getElementById('action-btn');
+
+        if (otpArea.style.display === "none") {
+            if(mobile.value.length === 10) {
+                otpArea.style.display = "block";
+                mobile.disabled = true;
+                btn.innerHTML = "लॉगिन की पुष्टि करें";
+                alert("ट्रायल मोड: OTP भेजा गया!");
+            } else { alert("कृपया 10 अंकों का सही नंबर डालें"); }
+        } else {
+            if(document.getElementById('otp-val').value === "123456") {
+                document.getElementById('login-screen').style.display = "none";
+                document.getElementById('admin-panel').style.display = "block";
+            } else { alert("गलत OTP! (123456 इस्तेमाल करें)"); }
+        }
+    }
+    function verify(val) {
+        document.getElementById('status').innerHTML = val;
+        document.getElementById('status').style.color = (val === 'Approved') ? 'green' : 'red';
+        alert("यूजर को " + val + " कर दिया गया है।");
+    }
+</script>
+
+</body>
+</html>

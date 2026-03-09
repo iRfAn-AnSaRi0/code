@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
@@ -61,6 +61,81 @@
         document.getElementById('status').innerHTML = val;
         document.getElementById('status').style.color = (val === 'Approved') ? 'green' : 'red';
         alert("यूजर को " + val + " कर दिया गया है।");
+    }
+</script>
+
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insta Ride - Driver Tracking</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 20px; background: #f4f4f4; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
+        button { background: #27ae60; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; }
+        #status { margin-top: 15px; font-weight: bold; color: #2c3e50; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Insta Ride</h2>
+    <p>ड्राइवर और कस्टमर को कनेक्ट करें</p>
+    <button onclick="findNearbyDriver()">नजदीकी ड्राइवर खोजें</button>
+    <div id="status">बटन दबाएं...</div>
+</div>
+
+<script>
+    // डमी ड्राइवर डेटा (असल में यह डेटाबेस से आएगा)
+    const drivers = [
+        { name: "राजेश", lat: 27.3314, lng: 88.6138 },
+        { name: "सुनील", lat: 27.3389, lng: 88.6065 }
+    ];
+
+    function findNearbyDriver() {
+        const status = document.getElementById('status');
+        
+        if (!navigator.geolocation) {
+            status.innerText = "लोकेशन सपोर्ट उपलब्ध नहीं है।";
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition((pos) => {
+            const userLat = pos.coords.latitude;
+            const userLng = pos.coords.longitude;
+            
+            // सबसे नजदीक ड्राइवर ढूँढना (Haversine Formula का इस्तेमाल)
+            let closestDriver = drivers[0];
+            let minDistance = 1000; // किमी में
+
+            drivers.forEach(driver => {
+                let dist = calculateDistance(userLat, userLng, driver.lat, driver.lng);
+                if (dist < minDistance) {
+                    minDistance = dist;
+                    closestDriver = driver;
+                }
+            });
+
+            status.innerHTML = `नजदीकी ड्राइवर: <b>${closestDriver.name}</b><br>दूरी: ${minDistance.toFixed(2)} KM`;
+        }, () => {
+            status.innerText = "लोकेशन एक्सेस नहीं मिला।";
+        });
+    }
+
+    // दूरी मापने का गणितीय फॉर्मूला
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Earth radius in KM
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
     }
 </script>
 
